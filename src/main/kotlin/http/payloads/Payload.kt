@@ -53,10 +53,10 @@ class Payload(var version: Int) {
             visitEnd()
         }
 
-        // TODO: payload 可以执行，但会导致 Runtime Exception
         cw.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null).run {
             val mv = dispatch(mapping, this)
             mv.visitCode()
+            visitInsn(RETURN)
             visitMaxs(1, 0)
             visitEnd()
         }
