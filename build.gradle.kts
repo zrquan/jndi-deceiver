@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.cli.jvm.compiler.findMainClass
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -12,20 +11,18 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.4")
-
-//    implementation("io.ktor:ktor-server-jetty:1.6.7")
-//    implementation("io.ktor:ktor-network:1.6.7")
     implementation("io.javalin:javalin:4.3.0")
-
-    // https://mvnrepository.com/artifact/org.ow2.asm/asm
     implementation("org.ow2.asm:asm:9.2")
+    implementation("org.reflections:reflections:0.10.2")
+    implementation("org.apache.commons:commons-lang3:3.12.0")
+    implementation("org.apache.tomcat:tomcat-catalina:8.5.38")
+    implementation("com.unboundid:unboundid-ldapsdk:3.1.1")
 
     // suppress warning about SLF4J
     implementation("org.slf4j:slf4j-nop:1.7.35")
 
-    implementation("org.apache.commons:commons-lang3:3.12.0")
-    implementation("org.apache.tomcat:tomcat-catalina:8.5.38")
-    implementation("com.unboundid:unboundid-ldapsdk:3.1.1")
+    testImplementation("io.kotest:kotest-runner-junit5:5.1.0")
+    testImplementation("org.apache.logging.log4j:log4j-core:2.14.1")
 }
 
 
@@ -39,6 +36,10 @@ tasks.withType<JavaCompile> {
         forkOptions.executable = "javac"
         compilerArgs.plusAssign("-XDignore.symbol.file")
     }
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }
 
 tasks.withType<Jar> {
@@ -55,6 +56,7 @@ tasks.withType<Jar> {
     )
 }
 
+// for mixing java and kotlin files
 sourceSets.main {
     java.srcDir("src/main/kotlin")
 }
