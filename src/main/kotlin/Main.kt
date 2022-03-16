@@ -7,8 +7,8 @@ import kotlin.system.exitProcess
 fun main(args: Array<String>) {
     Options.init(args)
 
-    if (Options.helpMessage) {
-        TODO("description of each payload")
+    if (Options.helpInfo) {
+        println("undone")
         exitProcess(0)
     }
 

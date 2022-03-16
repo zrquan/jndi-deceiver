@@ -12,11 +12,12 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.4")
     implementation("io.javalin:javalin:4.3.0")
-    implementation("org.ow2.asm:asm:9.2")
+//    implementation("org.ow2.asm:asm:9.2")
     implementation("org.reflections:reflections:0.10.2")
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("org.apache.tomcat:tomcat-catalina:8.5.38")
     implementation("com.unboundid:unboundid-ldapsdk:3.1.1")
+    implementation("org.javassist:javassist:3.28.0-GA")
 
     // suppress warning about SLF4J
     implementation("org.slf4j:slf4j-nop:1.7.35")

@@ -7,8 +7,8 @@ import java.net.NetworkInterface
 
 object Options {
     // static options
-    val payloadName = "Payload"
-    val javaVersion = 8
+    const val payloadName = "Payload"
+    const val javaVersion = 8
 
     // cli options
     private val parser = ArgParser("JNDI Deceiver")
@@ -27,8 +27,12 @@ object Options {
     val httpPort by parser
         .option(ArgType.Int, shortName = "hp", description = "port of HTTP server")
         .default(8180)
-    val helpMessage by parser
-        .option(ArgType.Boolean, shortName = "hh", description = "help message of payloads")
+    val echo by parser
+        .option(ArgType.Choice(listOf("tomcat", "spring"), { it }), description = "type of echo")
+    val memshell by parser
+        .option(ArgType.Choice(listOf("tomcat", "spring"), { it }), description = "type of memory shell")
+    val helpInfo by parser
+        .option(ArgType.Boolean, shortName = "hh", description = "Detailed info")
         .default(false)
 
     fun init(args: Array<String>) {
