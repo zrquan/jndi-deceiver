@@ -1,3 +1,5 @@
+package util
+
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
@@ -7,6 +9,7 @@ import java.net.NetworkInterface
 
 object Options {
     // static options
+    const val collabAddress = "http://foo.ceye.io/"
     const val payloadName = "Payload"
     const val javaVersion = 8
 
@@ -28,7 +31,7 @@ object Options {
         .option(ArgType.Int, shortName = "hp", description = "port of HTTP server")
         .default(8180)
     val echo by parser
-        .option(ArgType.Choice(listOf("tomcat", "spring"), { it }), description = "type of echo")
+        .option(ArgType.Choice(listOf("tomcat", "spring", "http"), { it }), description = "type of echo")
     val memshell by parser
         .option(ArgType.Choice(listOf("tomcat", "spring"), { it }), description = "type of memory shell")
     val helpInfo by parser

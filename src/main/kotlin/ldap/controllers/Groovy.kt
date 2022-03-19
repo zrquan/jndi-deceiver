@@ -1,5 +1,6 @@
 package ldap.controllers
 
+import util.Options
 import com.unboundid.ldap.listener.interceptor.InMemoryInterceptedSearchResult
 import com.unboundid.ldap.sdk.Entry
 import com.unboundid.ldap.sdk.LDAPResult

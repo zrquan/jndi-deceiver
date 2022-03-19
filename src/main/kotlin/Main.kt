@@ -1,5 +1,6 @@
 import http.HTTPServer
 import ldap.LDAPServer
+import util.Options
 import util.green
 import kotlin.concurrent.thread
 import kotlin.system.exitProcess

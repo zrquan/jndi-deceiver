@@ -1,6 +1,6 @@
 package http.payloads
 
-import Options
+import util.Options
 import javassist.*
 import javassist.bytecode.ClassFile.JAVA_7
 import javassist.bytecode.ClassFile.JAVA_8
@@ -42,7 +42,7 @@ class PayloadGenerator {
             }
         }
 
-//        ctClass.writeFile(".")  // check
+        ctClass.writeFile(".")  // check
         return ctClass.toBytecode()
     }
 
@@ -52,6 +52,7 @@ class PayloadGenerator {
                 when (Options.echo) {
                     "tomcat" -> "echo.TomcatEcho"
                     "spring" -> "echo.SpringEcho"
+                    "http" -> "echo.HTTPEcho"
                     else -> "Basic"
                 }
             }
