@@ -89,7 +89,7 @@ class RMIServer {
             TransportConstants.Call -> doRMICall(input, output)
             TransportConstants.Ping -> output.writeByte(TransportConstants.PingAck.toInt())
             TransportConstants.DGCAck -> UID.read(input)
-            else -> throw IOException("${currentTime()} [RMI] Unknown transport op: $op")
+            else -> throw IOException("RMI >> Unknown transport op: $op")
         }
     }
 
@@ -101,7 +101,7 @@ class RMIServer {
                     "java.rmi.jndi.ObjID" -> ObjID::class.java
                     "java.rmi.jndi.UID" -> UID::class.java
                     "java.lang.String" -> String::class.java
-                    else -> throw IOException("${currentTime()} [RMI] Not allowed to read object")
+                    else -> throw IOException("RMI >> Not allowed to read object")
                 }
             }
         }
@@ -173,7 +173,7 @@ class RMIServer {
     }
 }
 
-fun RMIServer.log(text: String) = println(currentTime() + " RMI >> ".blue() + text)
+fun RMIServer.log(text: String) = println("RMI >> ".purple() + text)
 
 class MarshalOutputStream(stream: OutputStream, val url: URL?) : ObjectOutputStream(stream) {
     override fun annotateClass(cl: Class<*>?) {

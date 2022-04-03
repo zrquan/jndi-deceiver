@@ -3,7 +3,7 @@ package http
 import util.Options
 import io.javalin.Javalin
 import util.blue
-import util.currentTime
+import util.purple
 
 class HTTPServer {
     private val port = Options.httpPort
@@ -23,4 +23,4 @@ class HTTPServer {
         PayloadGenerator().generate(filename.substringBefore(".class"))
 }
 
-fun HTTPServer.log(text: String) = println(currentTime() + " HTTP >> ".blue() + text)
+fun HTTPServer.log(text: String) = println("HTTP >> ".purple() + text)

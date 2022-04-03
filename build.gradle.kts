@@ -13,6 +13,7 @@ dependencies {
     implementation("io.javalin:javalin:4.3.0")
     implementation("com.unboundid:unboundid-ldapsdk:3.1.1")
     implementation("org.javassist:javassist:3.28.0-GA")
+    implementation("org.apache.tomcat:tomcat-catalina:8.5.38")
 
     // suppress warning about SLF4J
     implementation("org.slf4j:slf4j-nop:1.7.35")
@@ -20,7 +21,6 @@ dependencies {
     compileOnly("org.springframework:spring-web:5.2.9.RELEASE")
     compileOnly("org.springframework.webflow:spring-webflow:2.5.1.RELEASE")
     compileOnly("org.eclipse.jetty:jetty-server:9.4.43.v20210629")
-    compileOnly("org.apache.tomcat:tomcat-catalina:8.5.38")
 
     testImplementation("org.apache.logging.log4j:log4j-core:2.14.1")
     testImplementation("org.codehaus.groovy:groovy:3.0.1")

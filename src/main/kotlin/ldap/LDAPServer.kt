@@ -1,14 +1,11 @@
 package ldap
 
-import util.Options
 import com.unboundid.ldap.listener.InMemoryDirectoryServer
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig
 import com.unboundid.ldap.listener.InMemoryListenerConfig
 import com.unboundid.ldap.listener.interceptor.InMemoryInterceptedSearchResult
 import com.unboundid.ldap.listener.interceptor.InMemoryOperationInterceptor
-import util.blue
-import util.currentTime
-import util.red
+import util.*
 import java.net.InetAddress
 import javax.net.ServerSocketFactory
 import javax.net.SocketFactory
@@ -49,4 +46,4 @@ class LDAPServer : InMemoryOperationInterceptor() {
     }
 }
 
-fun LDAPServer.log(text: String) = println(currentTime() + " LDAP >> ".blue() + text)
+fun LDAPServer.log(text: String) = println("LDAP >> ".purple() + text)
