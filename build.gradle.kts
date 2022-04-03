@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.6.10"
-    application
 }
 
 repositories {
@@ -12,18 +11,23 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.4")
     implementation("io.javalin:javalin:4.3.0")
-//    implementation("org.ow2.asm:asm:9.2")
-    implementation("org.reflections:reflections:0.10.2")
-    implementation("org.apache.commons:commons-lang3:3.12.0")
-    implementation("org.apache.tomcat:tomcat-catalina:8.5.38")
     implementation("com.unboundid:unboundid-ldapsdk:3.1.1")
     implementation("org.javassist:javassist:3.28.0-GA")
 
     // suppress warning about SLF4J
     implementation("org.slf4j:slf4j-nop:1.7.35")
 
-    testImplementation("io.kotest:kotest-runner-junit5:5.1.0")
+    compileOnly("org.springframework:spring-web:5.2.9.RELEASE")
+    compileOnly("org.springframework.webflow:spring-webflow:2.5.1.RELEASE")
+    compileOnly("org.eclipse.jetty:jetty-server:9.4.43.v20210629")
+    compileOnly("org.apache.tomcat:tomcat-catalina:8.5.38")
+
     testImplementation("org.apache.logging.log4j:log4j-core:2.14.1")
+    testImplementation("org.codehaus.groovy:groovy:3.0.1")
+    testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.1.51")
+    testImplementation("org.springframework.boot:spring-boot-starter-web:2.0.0.RELEASE") {
+        exclude(module = "spring-boot-starter-logging")
+    }
 }
 
 
@@ -37,10 +41,6 @@ tasks.withType<JavaCompile> {
         forkOptions.executable = "javac"
         compilerArgs.plusAssign("-XDignore.symbol.file")
     }
-}
-
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
 }
 
 tasks.withType<Jar> {
@@ -60,8 +60,4 @@ tasks.withType<Jar> {
 // for mixing java and kotlin files
 sourceSets.main {
     java.srcDir("src/main/kotlin")
-}
-
-application {
-    mainClass.set("MainKt")
 }
