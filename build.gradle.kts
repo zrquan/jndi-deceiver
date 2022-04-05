@@ -38,6 +38,7 @@ tasks.withType<KotlinCompile> {
 tasks.withType<JavaCompile> {
     options.run {
         isFork = true
+        isWarnings = false
         forkOptions.executable = "javac"
         compilerArgs.plusAssign("-XDignore.symbol.file")
     }
