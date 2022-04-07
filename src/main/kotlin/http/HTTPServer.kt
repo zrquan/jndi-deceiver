@@ -8,9 +8,11 @@ import util.purple
 class HTTPServer {
     private val port = Options.httpPort
 
+    private fun log(text: String) = println("HTTP >> ".purple() + text)
+
     fun run() {
         val app = Javalin.create().start(port)
-        println("HTTP server listening on 0.0.0.0:$port".blue())
+        log("Listening on ${Options.address}:$port".blue())
 
         app.get("/*") { ctx ->
             val uri = ctx.req.requestURI
@@ -22,5 +24,3 @@ class HTTPServer {
     private fun getPayload(filename: String): ByteArray =
         PayloadGenerator().generate(filename.substringBefore(".class"))
 }
-
-fun HTTPServer.log(text: String) = println("HTTP >> ".purple() + text)

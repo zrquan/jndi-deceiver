@@ -27,6 +27,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.1.51")
     testImplementation("org.springframework.boot:spring-boot-starter-web:2.0.0.RELEASE") {
         exclude(module = "spring-boot-starter-logging")
+        exclude(module = "spring-boot-starter-jetty")
     }
 }
 
