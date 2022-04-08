@@ -10,7 +10,7 @@ public class TomcatEcho {
 
     public TomcatEcho() {
         try {
-            result = "";
+            result = "debug: payload work";
             exec();
         } catch (Exception ignored) {}
     }
