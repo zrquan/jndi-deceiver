@@ -36,14 +36,14 @@ class LDAPServer : InMemoryOperationInterceptor() {
 
     override fun processSearchResult(result: InMemoryInterceptedSearchResult) {
         val base = result.request.baseDN
-        val key = base.substringBefore("/")
+        val (key, type) = base.split("/")
 
         log("Receive a request to $base")
 
         // key 和方法名一致
         when (key) {
             "ref" -> ref(result, base)
-            "tomcat" -> tomcat(result, base)
+            "tomcat" -> tomcat(result, base, type)
             "groovy" -> groovy(result, base)
             else -> log("Payload not found: $key".red())
         }

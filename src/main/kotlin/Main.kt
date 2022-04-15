@@ -14,11 +14,11 @@ fun main(args: Array<String>) {
         if (helpInfo) {
             println("Try the following links ;)".green())
             Class.forName("rmi.PayloadsKt").declaredMethods
-                .map { if (it.name == "ref") "${it.name}/[Basic|Echo|Mem]" else it.name }
+                .map { if (it.name != "groovy") "${it.name}/[Basic|Echo|Mem]" else it.name }
                 .forEach { println("rmi://$address:$rmiPort/$it") }
 
             Class.forName("ldap.PayloadsKt").declaredMethods
-                .map { if (it.name == "ref") "${it.name}/[Basic|Echo|Mem]" else it.name }
+                .map { if (it.name != "groovy") "${it.name}/[Basic|Echo|Mem]" else it.name }
                 .forEach { println("ldap://$address:$ldapPort/$it") }
 
             exitProcess(0)

