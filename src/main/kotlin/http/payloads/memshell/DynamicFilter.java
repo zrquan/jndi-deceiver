@@ -88,32 +88,16 @@ public class DynamicFilter implements Filter {
                 if (httpReq.getMethod().equals("POST")) {
                     String input = req.getReader().readLine();
                     if (input == null || input.isEmpty()) {
-                        StringBuilder tempInput = new StringBuilder();
-                        // 拿到真实的 Request 对象而非门面模式的 RequestFacade
                         Field field = rawReq.getClass().getDeclaredField("request");
                         field.setAccessible(true);
                         Request realRequest = (Request) field.get(rawReq);
-                        // 从 coyoteRequest 中拼接 body 参数
+
                         Field coyoteRequestField = realRequest.getClass().getDeclaredField("coyoteRequest");
                         coyoteRequestField.setAccessible(true);
                         org.apache.coyote.Request coyoteRequest = (org.apache.coyote.Request) coyoteRequestField.get(realRequest);
-                        Parameters parameters = coyoteRequest.getParameters();
-                        Field paramHashValues = parameters.getClass().getDeclaredField("paramHashValues");
-                        paramHashValues.setAccessible(true);
-                        LinkedHashMap paramMap = (LinkedHashMap) paramHashValues.get(parameters);
 
-                        Iterator<Map.Entry<String, ArrayList<String>>> iterator = paramMap.entrySet().iterator();
-                        while (iterator.hasNext()) {
-                            Map.Entry<String, ArrayList<String>> next = iterator.next();
-                            String paramKey = next.getKey().replaceAll(" ", "+");
-                            ArrayList<String> paramValueList = next.getValue();
-                            if (paramValueList.size() == 0) {
-                                tempInput.append(paramKey);
-                            } else {
-                                tempInput.append(paramKey).append("=").append(paramValueList.get(0));
-                            }
-                        }
-                        input = tempInput.toString();
+                        Parameters parameters = coyoteRequest.getParameters();
+                        input = parameters.toString().replaceAll(" ", "+").trim();
                     }
 
                     session.setAttribute("u", BH_KEY);
