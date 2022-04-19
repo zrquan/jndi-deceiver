@@ -1,4 +1,4 @@
-package http.payloads.echo;
+package payload.echo;
 
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;

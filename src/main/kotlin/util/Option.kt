@@ -7,7 +7,7 @@ import java.net.Inet4Address
 import java.net.InetAddress
 import java.net.NetworkInterface
 
-object Options {
+object Option {
     // static options
     const val collabAddress = "http://foo.ceye.io/"
     const val payloadName = "Payload"

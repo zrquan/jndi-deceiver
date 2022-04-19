@@ -1,4 +1,4 @@
-package http.payloads.memshell;
+package payload.memshell;
 
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.RequestFacade;

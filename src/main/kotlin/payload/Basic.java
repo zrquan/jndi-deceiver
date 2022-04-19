@@ -1,4 +1,4 @@
-package http.payloads;
+package payload;
 
 public class Basic {
 

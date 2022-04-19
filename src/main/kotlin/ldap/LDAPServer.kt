@@ -12,7 +12,7 @@ import javax.net.SocketFactory
 import javax.net.ssl.SSLSocketFactory
 
 class LDAPServer : InMemoryOperationInterceptor() {
-    private val port = Options.ldapPort
+    private val port = Option.ldapPort
 
     private fun log(text: String) = println("LDAP >> ".purple() + text)
 
@@ -31,12 +31,13 @@ class LDAPServer : InMemoryOperationInterceptor() {
             addInMemoryOperationInterceptor(this@LDAPServer)
         }
         InMemoryDirectoryServer(config).run { startListening() }
-        log("Listening on ${Options.address}:$port".blue())
+        log("Listening on ${Option.address}:$port".blue())
     }
 
     override fun processSearchResult(result: InMemoryInterceptedSearchResult) {
         val base = result.request.baseDN
-        val (key, type) = base.split("/")
+        val key = if (base.contains("/")) base.substringBefore("/") else base
+        val type = if (base.contains("/")) base.substringAfter("/") else ""
 
         log("Receive a request to $base")
 

