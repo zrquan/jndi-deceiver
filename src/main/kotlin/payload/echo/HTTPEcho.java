@@ -10,10 +10,12 @@ import java.util.Base64;
 
 public class HTTPEcho {
     String result;
+    String collabAddress;
 
     public HTTPEcho() {
         try {
             result = "";
+            collabAddress = "";
             exec();
         } catch (Exception e) {
             e.printStackTrace();
@@ -26,7 +28,7 @@ public class HTTPEcho {
 
     private void echo() {
         try {
-            URL url = new URL(Option.collabAddress);
+            URL url = new URL(collabAddress);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);

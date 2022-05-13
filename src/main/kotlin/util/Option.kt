@@ -8,12 +8,6 @@ import java.net.InetAddress
 import java.net.NetworkInterface
 
 object Option {
-    // static options
-    const val collabAddress = "http://foo.ceye.io/"
-    const val payloadName = "Payload"
-    const val javaVersion = 8
-
-    // cli options
     private val parser = ArgParser("JNDI Deceiver")
     val command by parser
         .option(ArgType.String, shortName = "c", description = "command you want to exec")
@@ -34,6 +28,11 @@ object Option {
         .option(ArgType.Choice(listOf("tomcat", "spring", "http"), { it }), description = "type of echo")
     val memshell by parser
         .option(ArgType.Choice(listOf("tomcat", "spring"), { it }), description = "type of memory shell")
+    val javaVersion by parser
+        .option(ArgType.Int, shortName = "v", description = "java version of payloads, 7 or 8")
+        .default(8)
+    val collabAddress by parser
+        .option(ArgType.String, shortName = "oob", description = "Address used to receive http-echo")
     val helpInfo by parser
         .option(ArgType.Boolean, shortName = "hh", description = "Detailed info")
         .default(false)
